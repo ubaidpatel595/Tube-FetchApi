@@ -5,11 +5,13 @@ from flask import request
 from moviepy.editor import VideoFileClip, AudioFileClip
 import os,time,threading
 from flask_cors import CORS
+from moviepy.config import change_settings
+
 def performCleanup(file,t):
     time.sleep(t)
     os.remove(file)
 
-
+tempDIr = os.getcwd()+"/tmp/"
 app = Flask("Yt Downloader")
 CORS(app,supports_credentials=True,resources={r"/*": {"origins":"*"}},allow_headers=['*','Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, filename'])
 @app.route("/")
@@ -33,6 +35,7 @@ def info():
     
 @app.route("/download",methods=['POST'])
 def download():  
+    os.chdir(os.getcwd()+"/tmp")
     yt = YouTube(request.get_json()["link"])  
     file = yt.streams.get_by_itag(request.get_json()["itag"])
     headers = {
@@ -59,13 +62,13 @@ def download():
        video_clip = video_clip.set_duration(video_clip.duration)
 
        # Write the merged video to an output file
-       video_clip.write_videofile(fname)
+       video_clip.write_videofile(tempDIr+fname)
        print("Video Converted")
        os.remove(fname.replace(".mp4",".m4a"))
        os.remove("1"+fname)
        threading.Thread(target=performCleanup,args=(fname,300)).start()
     else:
-        filename = file.default_filename.replace(".mp4",".m4a").encode('ascii', 'ignore').decode('ascii')
+        filename =file.default_filename.replace(".mp4",".m4a").encode('ascii', 'ignore').decode('ascii')
         file.download(filename=filename)
         audio_clip = AudioFileClip(filename)
         # Export the audio to MP3 format
@@ -77,7 +80,7 @@ def download():
         headers['filename'] = filename.replace(".m4a",".mp3")
         threading.Thread(target=performCleanup,args=(filename.replace(".m4a",".mp3"),300)).start()
     
-    response = make_response(send_file(headers['filename'], as_attachment=True, download_name=headers['filename']))
+    response = make_response(send_file(tempDIr+headers['filename'], as_attachment=True, download_name=headers['filename']))
     response.headers = headers
     return response
 
