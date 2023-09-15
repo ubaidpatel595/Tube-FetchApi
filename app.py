@@ -76,10 +76,11 @@ def download():
     headers = {
         "Content-Disposition": f'attachment; filename={file.default_filename.split("/")[-1]}',
         "Content-Type": "application/octet-stream",
-        "filename": file.default_filename,
     }
     if file.mime_type == "video/mp4":
         fname = file.default_filename.encode("ascii", "ignore").decode("ascii")
+        headers['filename'] = fname
+        print(fname)
         file.download(filename="1" + fname)
         audio = yt.streams.filter(only_audio=True, file_extension="mp4", bitrate="128kbps").first()
         audio.download(filename=fname.replace(".mp4", ".m4a"))
@@ -97,7 +98,7 @@ def download():
         video_clip = video_clip.set_duration(video_clip.duration)
 
         # Write the merged video to an output file
-        video_clip.write_videofile(tempDIr + fname)
+        video_clip.write_videofile(fname)
         print("Video Converted")
         os.remove(fname.replace(".mp4", ".m4a"))
         os.remove("1" + fname)
@@ -116,7 +117,7 @@ def download():
         threading.Thread(target=performCleanup, args=(filename.replace(".m4a", ".mp3"), 2)).start()
 
     response = make_response(
-        send_file(tempDIr + headers["filename"], as_attachment=True, download_name=headers["filename"])
+        send_file(tempDIr+"/"+ headers["filename"], as_attachment=True, download_name=headers["filename"])
     )
     response.headers = headers
     return response
