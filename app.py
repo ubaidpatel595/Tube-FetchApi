@@ -11,6 +11,13 @@ def performCleanup(file,t):
     time.sleep(t)
     os.remove(file)
 
+# Check if the directory already exists
+if not os.path.exists("tmp"):
+    try:
+        os.makedirs("tmp")
+    except OSError as e:
+        print(f"Error creating directory tmp {e}")
+
 tempDIr = os.getcwd()+"/tmp/"
 app = Flask("Yt Downloader")
 CORS(app,supports_credentials=True,resources={r"/*": {"origins":"*"}},allow_headers=['*','Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, filename'])
