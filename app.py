@@ -25,7 +25,7 @@ def performCleanup(file,t):
     time.sleep(t)
     os.remove(file)
 
-app = Flask("Yt Downloader")
+app = Flask("YtDownloader")
 CORS(
     app,
     supports_credentials=True,
