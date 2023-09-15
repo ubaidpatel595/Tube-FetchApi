@@ -12,9 +12,9 @@ def performCleanup(file,t):
     os.remove(file)
 
 # Check if the directory already exists
-if not os.path.exists("tmp"):
+if not os.path.exists(os.getcwd()+"/temp"):
     try:
-        os.makedirs("tmp")
+        os.makedirs(os.getcwd()+"/temp")
     except OSError as e:
         print(f"Error creating directory tmp {e}")
 
