@@ -40,7 +40,7 @@ def info(link,users):
                 if tid in users:
                     print("user already exists")
                 else:
-                    threading.Thread(target=inactiveUser, args=[tid]).start()
+                    threading.Thread(target=inactiveUser, args=[tid,users]).start()
                     users[tid] = [yt]
                     id = tid
                     unique = True

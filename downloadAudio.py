@@ -1,4 +1,6 @@
 import subprocess,os,cleanup,threading
+from dotenv import load_dotenv
+load_dotenv()
 
 def download(file, filename):
     # Define the paths    
@@ -11,11 +13,11 @@ def download(file, filename):
     file.download(filename="tmp/"+filename)
 
     # Specify the FFmpeg executable path
-    ffmpeg_path = "C:/Users/UBAID PATEL/Downloads/ffmpeg-2023-09-07-git-9c9f48e7f2-full_build/ffmpeg-2023-09-07-git-9c9f48e7f2-full_build/bin/ffmpeg.exe"
+    ffmpeg_path = ""
 
     try:
         cmd = [
-            ffmpeg_path,
+            os.environ.get("FFMPEG"),
             "-i", input_audio_path,
             "-acodec", "libmp3lame",
             "-q:a", "2",
