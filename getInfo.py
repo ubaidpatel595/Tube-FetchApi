@@ -17,6 +17,8 @@ def info(link,users):
         try:
             yt = YouTube(link)
             options = []
+            prog = yt.streams.filter(progressive=True)
+            nprog = yt.streams.filter(progressive=False)
             for stream in yt.streams.filter(progressive=False):
                 if stream.mime_type == "video/mp4":
                     options.append({
@@ -40,7 +42,7 @@ def info(link,users):
                 if tid in users:
                     print("user already exists")
                 else:
-                    threading.Thread(target=inactiveUser, args=[tid]).start()
+                    threading.Thread(target=inactiveUser, args=[tid,users]).start()
                     users[tid] = [yt]
                     id = tid
                     unique = True

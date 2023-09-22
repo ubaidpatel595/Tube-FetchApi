@@ -25,7 +25,7 @@ def home():
     return redirect("https://clipcatcher.vercel.app")
 
 @app.route("/info", methods=["POST"])
-@cache.cached(timeout=6000, key_prefix=lambda: request.get_json()["link"])
+@cache.cached(timeout=300, key_prefix=lambda: request.get_json()["link"])
 def info():
     return getInfo.info(request.get_json()["link"],users)
 
